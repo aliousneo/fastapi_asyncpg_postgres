@@ -1,0 +1,7 @@
+fastapi==0.109.2
+pydantic==2.6.1
+uvicorn==0.27.1
+SQLAlchemy==2.0.25
+asyncpg==0.29.0
+pydantic-extra-types==2.5.0
+phonenumbers==8.13.30

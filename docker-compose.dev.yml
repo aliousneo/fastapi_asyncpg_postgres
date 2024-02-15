@@ -1,0 +1,49 @@
+version: "4.26"
+
+services:
+  web-server:
+    build:
+      context: ./proxy
+    environment:
+      - BACKEND_ADDR=backend:6969
+    ports:
+      - 7000:7000
+    restart: always
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+    command: "uvicorn main:app --proxy-headers --host 0.0.0.0 --port 6969 --reload"
+    volumes:
+      - ./backend:/usr/src/app
+    environment:
+      - USER=appuser
+      - DEVELOPMENT=true
+      - DATABASE_ADDRESS=postgresql+asyncpg://postgres:postgres@db:5432/example
+    ports:
+      - 6969:6969
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres
+    restart: always
+    user: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=example
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 60s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 5432:5432
+
+volumes:
+  db-data:
