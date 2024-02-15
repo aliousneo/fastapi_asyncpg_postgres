@@ -21,7 +21,7 @@ services:
     environment:
       - USER=appuser
       - DEVELOPMENT=true
-      - DATABASE_ADDRESS=postgresql+asyncpg://postgres:postgres@db:5432/example
+      - DATABASE_ADDRESS=postgresql+asyncpg://postgres_user:postgres_password@db:5432/example
     ports:
       - 6969:6969
     depends_on:
@@ -31,12 +31,12 @@ services:
   db:
     image: postgres
     restart: always
-    user: postgres
+    user: postgres_user
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=example
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=postgres_password
     healthcheck:
       test: ["CMD", "pg_isready"]
       interval: 60s
