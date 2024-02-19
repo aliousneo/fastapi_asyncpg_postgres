@@ -6,5 +6,4 @@ async def initial():
 
 async def create_tables():
     async with DBConnection().engine.begin() as conn:
-        print(Base)
         await conn.run_sync(Base.metadata.create_all)
